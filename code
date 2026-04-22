@@ -1,0 +1,307 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# =================================================================
+# STUDENT-OSINT v2.0 - TEST NUKLIR EDITION
+# =================================================================
+# RULES: 
+# 1. User masukin query (nama/NIK/telepon/NPSN)
+# 2. LANGSUNG muncul soal KIMIA/FISIKA/MTK Kelas 12 Kurmer
+# 3. Jawab bener → muncul data dari API
+# 4. Jawab salah → "DIH PEA GAK BISA" + ngejek
+# 5. GAK ADA PEMBARITAHUAN BAKAL DAPET SOAL
+# =================================================================
+
+import os
+import sys
+import json
+import random
+import requests
+import time
+
+# Warna
+R = '\033[91m'
+G = '\033[92m'
+Y = '\033[93m'
+B = '\033[94m'
+P = '\033[95m'
+C = '\033[96m'
+W = '\033[97m'
+BOLD = '\033[1m'
+RESET = '\033[0m'
+
+# Banner
+os.system('clear' if os.name == 'posix' else 'cls')
+print(f"""{R}{BOLD}
+╔══════════════════════════════════════════════════════════╗
+║           🎓 STUDENT-OSINT v2.0 - NUKLIR 🎓             ║
+║        "TEST KURIKULUM MERDEKA DULU, BRO!"              ║
+╚══════════════════════════════════════════════════════════╝
+{RESET}
+""")
+
+# ======================== SOAL KURMER KELAS 12 ========================
+SOAL_KIMIA = [
+    {
+        "soal": "Senyawa berikut yang merupakan isomer fungsi dari butanol adalah...",
+        "a": "Butana",
+        "b": "Butena",
+        "c": "Dietil eter",
+        "d": "Butanon",
+        "e": "Asam butanoat",
+        "jawaban": "c"
+    },
+    {
+        "soal": "Reaksi adisi pada alkena menghasilkan...",
+        "a": "Alkana",
+        "b": "Alkuna",
+        "c": "Alkohol",
+        "d": "Eter",
+        "e": "Aldehida",
+        "jawaban": "a"
+    },
+    {
+        "soal": "Senyawa yang memiliki gugus fungsi -CHO adalah...",
+        "a": "Aldehida",
+        "b": "Keton",
+        "c": "Asam karboksilat",
+        "d": "Ester",
+        "e": "Alkohol",
+        "jawaban": "a"
+    },
+    {
+        "soal": "Berikut yang merupakan polimer alam adalah...",
+        "a": "Nilon",
+        "b": "Polistirena",
+        "c": "PVC",
+        "d": "Karet alam",
+        "e": "Teflon",
+        "jawaban": "d"
+    },
+    {
+        "soal": "Orbital hibrida pada atom C dalam molekul CH4 adalah...",
+        "a": "sp",
+        "b": "sp2",
+        "c": "sp3",
+        "d": "sp3d",
+        "e": "sp3d2",
+        "jawaban": "c"
+    }
+]
+
+SOAL_FISIKA = [
+    {
+        "soal": "Besaran berikut yang termasuk besaran vektor adalah...",
+        "a": "Massa",
+        "b": "Suhu",
+        "c": "Kecepatan",
+        "d": "Waktu",
+        "e": "Energi",
+        "jawaban": "c"
+    },
+    {
+        "soal": "Hukum Newton I menyatakan bahwa...",
+        "a": "F = m.a",
+        "b": "Aksi = reaksi",
+        "c": "Benda diam akan tetap diam",
+        "d": "Energi kekal",
+        "e": "Momentum kekal",
+        "jawaban": "c"
+    },
+    {
+        "soal": "Satuan dari gaya dalam SI adalah...",
+        "a": "Joule",
+        "b": "Watt",
+        "c": "Pascal",
+        "d": "Newton",
+        "e": "Kg m/s",
+        "jawaban": "d"
+    },
+    {
+        "soal": "Muatan listrik sebesar 1 Coulomb setara dengan...",
+        "a": "1 Ampere/detik",
+        "b": "1 Ampere x detik",
+        "c": "1 Volt/Ampere",
+        "d": "1 Ohm x Ampere",
+        "e": "1 Watt/Volt",
+        "jawaban": "b"
+    },
+    {
+        "soal": "Gelombang elektromagnetik yang memiliki frekuensi tertinggi adalah...",
+        "a": "Radio",
+        "b": "Inframerah",
+        "c": "Sinar tampak",
+        "d": "Sinar-X",
+        "e": "Sinar gamma",
+        "jawaban": "e"
+    }
+]
+
+SOAL_MTK = [
+    {
+        "soal": "Turunan pertama dari f(x) = x³ + 2x² - 5x + 7 adalah...",
+        "a": "3x² + 4x - 5",
+        "b": "3x² + 2x - 5",
+        "c": "x² + 4x - 5",
+        "d": "3x² + 4x + 5",
+        "e": "2x² + 4x - 5",
+        "jawaban": "a"
+    },
+    {
+        "soal": "Nilai dari lim x→3 (x² - 9)/(x - 3) adalah...",
+        "a": "3",
+        "b": "6",
+        "c": "9",
+        "d": "0",
+        "e": "tak terdefinisi",
+        "jawaban": "b"
+    },
+    {
+        "soal": "Integral dari ∫ 2x dx adalah...",
+        "a": "x² + C",
+        "b": "2x² + C",
+        "c": "x²/2 + C",
+        "d": "2x + C",
+        "e": "x + C",
+        "jawaban": "a"
+    },
+    {
+        "soal": "Matriks yang memiliki determinan = 0 disebut...",
+        "a": "Matriks identitas",
+        "b": "Matriks singular",
+        "c": "Matriks non-singular",
+        "d": "Matriks diagonal",
+        "e": "Matriks transpose",
+        "jawaban": "b"
+    },
+    {
+        "soal": "Nilai dari sin 90° adalah...",
+        "a": "0",
+        "b": "1/2",
+        "c": "1/2√2",
+        "d": "1/2√3",
+        "e": "1",
+        "jawaban": "e"
+    }
+]
+
+# Gabungan semua soal
+SEMUA_SOAL = SOAL_KIMIA + SOAL_FISIKA + SOAL_MTK
+
+# ======================== API DATABASE ========================
+API_LIST = {
+    "dukcapil_name": "https://api.beritatenar.com/dukcapil/name?q=",
+    "dukcapil_nik": "https://api.beritatenar.com/dukcapil/nik?q=",
+    "dukcapil_phone": "https://api.beritatenar.com/dukcapil/phone?q=",
+    "bpjs_pasien": "https://api.beritatenar.com/bpjs/pasien?q=",
+    "bpjs_personil": "https://api.beritatenar.com/bpjs/personil?q=",
+    "sekolah": "https://api-sekolah-indonesia.vercel.app/sekolah?npsn="
+}
+
+def tanya_soal():
+    """Kasih soal random tanpa kasih tau"""
+    soal = random.choice(SEMUA_SOAL)
+    print(f"\n{R}{BOLD}⚠️ VERIFIKASI KURIKULUM MERDEKA ⚠️{RESET}")
+    print(f"{Y}Jawab soal berikut untuk melanjutkan:{RESET}\n")
+    print(f"{C}{soal['soal']}{RESET}")
+    print(f"{W}  a. {soal['a']}{RESET}")
+    print(f"{W}  b. {soal['b']}{RESET}")
+    print(f"{W}  c. {soal['c']}{RESET}")
+    print(f"{W}  d. {soal['d']}{RESET}")
+    print(f"{W}  e. {soal['e']}{RESET}")
+    
+    jawab = input(f"\n{G}Jawaban (a/b/c/d/e): {RESET}").lower()
+    
+    if jawab == soal['jawaban']:
+        print(f"\n{G}✅ BENAR! Akses diberikan.{RESET}")
+        return True
+    else:
+        print(f"\n{R}{BOLD}❌ DIH PEA GAK BISA!{RESET}")
+        print(f"{R}Jawaban yang bener tuh {soal['jawaban'].upper()}, goblok!{RESET}")
+        print(f"{Y}Masa soal kelas 12 aja gak bisa, masa mau cari data?{RESET}")
+        return False
+
+def query_api(url, query):
+    """Panggil API dan return data"""
+    try:
+        full_url = f"{url}{query}"
+        r = requests.get(full_url, timeout=10)
+        if r.status_code == 200:
+            return r.json()
+        return None
+    except:
+        return None
+
+def tampilkan_data(jenis, data):
+    """Tampilkan data sesuai format"""
+    if not data or not data.get('status') or not data.get('data'):
+        print(f"{R}❌ Data tidak ditemukan!{RESET}")
+        return
+    
+    hasil = data['data']
+    print(f"\n{G}✅ {len(hasil)} data ditemukan:{RESET}\n")
+    
+    for i, item in enumerate(hasil[:5], 1):  # Max 5 hasil
+        print(f"{C}═══ DATA KE-{i} ═══{RESET}")
+        for key, val in item.items():
+            if val and str(val) != "null" and str(val) != "-" and str(val) != "-- Pilih -":
+                print(f"  {Y}{key}{RESET}: {W}{val}{RESET}")
+        print()
+
+def main():
+    while True:
+        print(f"\n{B}{BOLD}┌─────────────────────────────────────────────────────────┐{RESET}")
+        print(f"{B}{BOLD}│  Pilih Database:{RESET}")
+        print(f"{B}{BOLD}│  1. DUKCAPIL (Nama){RESET}")
+        print(f"{B}{BOLD}│  2. DUKCAPIL (NIK){RESET}")
+        print(f"{B}{BOLD}│  3. DUKCAPIL (Telepon){RESET}")
+        print(f"{B}{BOLD}│  4. BPJS (Pasien){RESET}")
+        print(f"{B}{BOLD}│  5. BPJS (Personil){RESET}")
+        print(f"{B}{BOLD}│  6. Data Sekolah (NPSN){RESET}")
+        print(f"{B}{BOLD}│  0. Keluar{RESET}")
+        print(f"{B}{BOLD}└─────────────────────────────────────────────────────────┘{RESET}")
+        
+        pilih = input(f"{G}Pilih (0-6): {RESET}")
+        
+        if pilih == "0":
+            print(f"{R}Bye! Belajar dulu sana!{RESET}")
+            break
+        
+        if pilih == "1":
+            url = API_LIST["dukcapil_name"]
+            prompt = "Masukkan NAMA: "
+        elif pilih == "2":
+            url = API_LIST["dukcapil_nik"]
+            prompt = "Masukkan NIK (16 digit): "
+        elif pilih == "3":
+            url = API_LIST["dukcapil_phone"]
+            prompt = "Masukkan No Telepon: "
+        elif pilih == "4":
+            url = API_LIST["bpjs_pasien"]
+            prompt = "Masukkan Nama/No BPJS: "
+        elif pilih == "5":
+            url = API_LIST["bpjs_personil"]
+            prompt = "Masukkan Nama/NIP: "
+        elif pilih == "6":
+            url = API_LIST["sekolah"]
+            prompt = "Masukkan NPSN (8 digit): "
+        else:
+            print(f"{R}Pilihan salah!{RESET}")
+            continue
+        
+        # Langsung kasih soal tanpa pemberitahuan
+        if not tanya_soal():
+            print(f"\n{Y}Silahkan coba lagi kalo udah bisa jawab soal!{RESET}")
+            input(f"\n{W}Tekan Enter...{RESET}")
+            continue
+        
+        # Baru masukin query
+        query = input(f"{C}{prompt}{RESET}")
+        print(f"{Y}Mengakses database...{RESET}")
+        
+        data = query_api(url, query)
+        tampilkan_data(pilih, data)
+        
+        input(f"\n{W}Tekan Enter untuk lanjut...{RESET}")
+
+if __name__ == "__main__":
+    main()
